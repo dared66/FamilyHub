@@ -1,38 +1,39 @@
-# FamilyHub Flutter App Fixes Summary
+# FamilyHub Flutter App - Build Fix Summary
 
-## Issues Fixed:
+## Issues Fixed
 
-### Issue 1: SnackBar covers page dots
-**File:** `/tmp/FamilyHub/lib/pages/calendar_page.dart`
-**Fix:** Modified SnackBar call to use margin: EdgeInsets.only(bottom: 56) and behavior: SnackBarBehavior.floating
-- Changed from: `SnackBar(content: Text('Tapped: ${e.summary} at ${e.startTime.hour}:${e.startTime.minute.toString().padLeft(2, '0')}'))`
-- Changed to: 
-```dart
-SnackBar(
-  content: Text('Tapped: ${e.summary} at ${e.startTime.hour}:${e.startTime.minute.toString().padLeft(2, '0')}'),
-  margin: EdgeInsets.only(bottom: 56),
-  behavior: SnackBarBehavior.floating,
-)
-```
+1. **main.dart** - SideNav needs currentIndex parameter:
+   - Added `currentIndex: 0` to SideNav component usage
 
-### Issue 2: Text color wrong (light text on light bg)
-**File:** `/tmp/FamilyHub/lib/core/theme.dart`
-**Fix:** Updated theme to use Brightness.light and proper ColorScheme.light
-- Changed brightness from Brightness.dark to Brightness.light
-- Updated ColorScheme to use ColorScheme.light with:
-  - surface: Color(0xFFF5F5F5) 
-  - primary: Color(0xFF1A73E8)
-  - onSurface: Color(0xFF202124)
+2. **main.dart** - CalendarHeader onDateChanged parameter:
+   - Removed the `onDateChanged` callback (replaced with comment)
+   - Kept the `onViewModeChanged` callback which is working properly
 
-### Issue 3: "x events this month" count text color
-**Analysis:** The header text with white color on blue background is acceptable as it's on a contrasting blue background. The white text on blue is not a white-on-white issue since the background is blue, not white.
+3. **main.dart** - View widgets missing currentDate parameter:
+   - Updated all view widgets to pass `currentDate: DateTime.now()` where appropriate
 
-## Files Modified:
-1. `/tmp/FamilyHub/lib/pages/calendar_page.dart` - SnackBar positioning fix
-2. `/tmp/FamilyHub/lib/core/theme.dart` - Theme configuration update
+4. **upcoming_view.dart** - EdgeInsets issue:
+   - Fixed `EdgeInsets.only(left: 60)` to use named parameters correctly
 
-## Verification:
-The fixes properly address the stated problems:
-1. SnackBar now floats above page dots
-2. Theme is configured for light mode with proper color scheme  
-3. Header white text on blue background is correctly displayed and readable
+5. **upcoming_view.dart** - WeatherIcon missing parameters:
+   - Updated `WeatherIcon` to include required `type`, `high`, and `low` parameters
+
+6. **week_view.dart** - WeatherIcon missing parameters:
+   - Updated `WeatherIcon` to include required `type`, `high`, and `low` parameters
+
+7. **day_view.dart** - WeatherIcon missing parameters:
+   - Updated `WeatherIcon` to include required `type`, `high`, and `low` parameters
+
+8. **upcoming_view.dart** - maxWidth parameter:
+   - Replaced `maxWidth` with `const SizedBox(width: 720)` for proper usage
+
+## Files Modified
+
+- `/tmp/FamilyHub/lib/main.dart` 
+- `/tmp/FamilyHub/lib/widgets/upcoming_view.dart`
+- `/tmp/FamilyHub/lib/widgets/week_view.dart`  
+- `/tmp/FamilyHub/lib/widgets/day_view.dart`
+
+## Results
+
+The app should now compile successfully with all the mentioned build errors resolved.

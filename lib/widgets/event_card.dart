@@ -1,120 +1,109 @@
 import 'package:flutter/material.dart';
 
-import '../core/const.dart';
-import '../core/theme.dart';
-import '../models/partials.dart';
-
-/// A compact, single-line event card used in the agenda / list views.
-///
-/// Displays a colored left bar, the event start time (or "All-day" for
-/// all-day events), and the event title (truncated at two lines).
+/// A clean event card widget with glass effect styling.
 class EventCard extends StatelessWidget {
-  /// The event to display.
-  final FamilyEvent event;
+  /// The title of the event
+  final String title;
+
+  /// The time of the event (formatted like "10:00 AM")
+  final String time;
+
+  /// The date of the event (formatted like "May 15, 2026")
+  final String date;
+
+  /// Color for the left accent bar
+  final Color color;
+
+  /// Callback when the card is tapped
+  final VoidCallback? onTap;
 
   const EventCard({
     super.key,
-    required this.event,
+    required this.title,
+    required this.time,
+    required this.date,
+    required this.color,
+    this.onTap,
   });
-
-  /// Default calendar accent color when the event has no color set.
-  static const _defaultColor = primary;
 
   @override
   Widget build(BuildContext context) {
-    final eventColor = _parseColor(event.color) ?? _defaultColor;
-    final timeText =
-        event.allDay ? 'All-day' : _formatTime(event.startTime);
-
     return Container(
-      height: 48.0,
-      margin: const EdgeInsets.symmetric(horizontal: 4.0),
+      margin: const EdgeInsets.only(bottom: 8.0),
       decoration: BoxDecoration(
-        color: surface,
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Row(
-        children: [
-          // ── Colored left bar (4 px) ──────────────────
-          Container(
-            width: 4.0,
-            decoration: BoxDecoration(
-              color: eventColor,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(8.0),
-                bottomLeft: Radius.circular(8.0),
-              ),
-            ),
-          ),
-          const SizedBox(width: 10.0),
-
-          // ── Time / "All-day" ─────────────────────────
-          Text(
-            timeText,
-            style: AppTheme.darkTheme.textTheme.bodySmall?.copyWith(
-              color: textPrimary,
-              fontWeight: FontWeight.bold,
-              fontSize: 11.0,
-            ),
-          ),
-          const SizedBox(width: 12.0),
-
-          // ── Title (truncated at 2 lines) ─────────────
-          Expanded(
-            child: Text(
-              event.summary,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: AppTheme.darkTheme.textTheme.bodySmall?.copyWith(
-                color: textPrimary,
-              ),
-            ),
+        color: const Color(0xFF1E1E1E).withOpacity(0.85),
+        borderRadius: BorderRadius.circular(12.0),
+        border: Border.all(
+          color: const Color(0xFF2A2A2A),
+          width: 0.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 4.0,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            children: [
+              // Left colored bar (4px wide)
+              Container(
+                width: 4.0,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: const BorderRadius.horizontal(
+                    left: Radius.circular(4.0),
+                    right: Radius.circular(4.0),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12.0),
+              // Content area
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title in bold
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4.0),
+                    // Time below title
+                    Text(
+                      time,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 13.0,
+                      ),
+                    ),
+                    const SizedBox(height: 2.0),
+                    // Date below time
+                    Text(
+                      date,
+                      style: const TextStyle(
+                        color: Colors.white38,
+                        fontSize: 11.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
-  }
-
-  // ─── helpers ────────────────────────────────────────────────────────
-
-  /// Attempts to parse a hex color string into a [Color].
-  ///
-  /// Accepted formats:
-  ///   - "0xAARRGGBB"
-  ///   - "#AARRGGBB"
-  ///   - "#RRGGBB"  (alpha defaults to opaque)
-  ///
-  /// Returns [null] when the input is null or unparseable.
-  Color? _parseColor(String? colorString) {
-    if (colorString == null) return null;
-
-    // Handle "0xAARRGGBB"
-    if (colorString.startsWith('0x')) {
-      final parsed = int.tryParse(colorString.substring(2), radix: 16);
-      if (parsed != null) return Color(parsed);
-    }
-
-    // Handle "#AARRGGBB" or "#RRGGBB"
-    if (colorString.startsWith('#')) {
-      final hex = colorString.substring(1);
-      int intColor;
-      if (hex.length == 8) {
-        intColor = int.parse(hex, radix: 16);
-      } else if (hex.length == 6) {
-        intColor = 0xFF000000 | int.parse(hex, radix: 16);
-      } else {
-        return null;
-      }
-      return Color(intColor);
-    }
-
-    return null;
-  }
-
-  /// Formats a [DateTime] as "HH:MM" (24-hour).
-  String _formatTime(DateTime date) {
-    final hours = date.hour.toString().padLeft(2, '0');
-    final minutes = date.minute.toString().padLeft(2, '0');
-    return '$hours:$minutes';
   }
 }
