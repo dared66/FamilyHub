@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'widgets/status_bar.dart';
+import 'widgets/top_nav_bar.dart';
 import 'widgets/page_dot_indicator.dart';
 import 'pages/calendar_page.dart';
 import 'pages/dashboard_page.dart';
@@ -63,14 +63,15 @@ class _AppShellState extends State<AppShell> {
               ],
             ),
           ),
+          // Top navigation bar
           Positioned(
             top: 0, left: 0, right: 0,
-            child: StatusBar(
-              onTapCalendar: () => _pageController.animateToPage(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut),
-              onTapTasks: () => _pageController.animateToPage(1, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut),
-              onTapPhotos: () => _pageController.animateToPage(2, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut),
+            child: TopNavBar(
+              currentPage: _currentPage,
+              onPageChanged: (i) => _pageController.animateToPage(i, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut),
             ),
           ),
+          // Page dot indicator
           Positioned(
             bottom: 16, left: 0, right: 0,
             child: PageDotIndicator(
