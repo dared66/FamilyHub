@@ -12,65 +12,74 @@ class AddEventSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            'Add New Event',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            decoration: const InputDecoration(
-              labelText: 'Event Title',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            decoration: const InputDecoration(
-              labelText: 'Description',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Row(
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.6,
+      ),
+      child: Container(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Start Time',
-                    border: OutlineInputBorder(),
-                  ),
-                  readOnly: true,
+              const Text(
+                'Add New Event',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'End Time',
-                    border: OutlineInputBorder(),
-                  ),
-                  readOnly: true,
+              const SizedBox(height: 16),
+              TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Event Title',
+                  border: OutlineInputBorder(),
                 ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'Start Time',
+                        border: OutlineInputBorder(),
+                      ),
+                      readOnly: true,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'End Time',
+                        border: OutlineInputBorder(),
+                      ),
+                      readOnly: true,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  // This would normally save the event
+                  Navigator.pop(context);
+                },
+                child: const Text('Save Event'),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              // This would normally save the event
-              Navigator.pop(context);
-            },
-            child: const Text('Save Event'),
-          ),
-        ],
+        ),
       ),
     );
   }
