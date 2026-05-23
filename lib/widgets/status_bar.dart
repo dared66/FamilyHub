@@ -86,17 +86,29 @@ class _StatusBarState extends ConsumerState<StatusBar> {
   @override
   Widget build(BuildContext context) {
     final weatherAsync = ref.watch(weatherNotifierProvider);
-    final weather = ref.watch(weatherNotifierProvider);
-    final weatherText = weather != null
-        ? _weatherContent(
-            weatherCodeToIcon(weather.currentWeatherCode),
-            weather.currentTemperature.round(),
-          )
-        : _weatherPlaceholder();
+    
+    // Handle weather data display
+    Widget weatherContent = _weatherPlaceholder();
+    
+    if (weatherAsync != null) {
+      final weather = weatherAsync;
+      if (weather != null) {
+        weatherContent = _weatherContent(
+          weatherCodeToIcon(weather.currentWeatherCode),
+          weather.currentTemperature.round(),
+        );
+      }
+    } else if (weatherAsync is AsyncError) {
+      // In case of error, show placeholder
+      weatherContent = _weatherPlaceholder();
+    } else if (weatherAsync is AsyncLoading) {
+      // While loading, show placeholder
+      weatherContent = _weatherPlaceholder();
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-      child: _buildBar(weatherText),
+      child: _buildBar(weatherContent),
     );
   }
 
